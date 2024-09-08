@@ -2,9 +2,9 @@ package karn.core.multithreading.volatileAndAtomic;
 
 public class VolatileSolvingThreadLocalCachingProblem {
     public static void main(String[] args) throws InterruptedException {
-        VolatileResource volatileResource = new VolatileResource();
+        Resource resource = new VolatileResource();
         Thread t1 = new Thread(() -> {
-            volatileResource.printFlagStatus();
+            resource.printFlagStatus();
         });
         Thread t2 = new Thread(() -> {
             try {
@@ -12,7 +12,7 @@ public class VolatileSolvingThreadLocalCachingProblem {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            volatileResource.setFlagTrue();
+            resource.setFlagTrue();
 
         });
         t1.start();
@@ -24,33 +24,42 @@ public class VolatileSolvingThreadLocalCachingProblem {
     }
 
 }
+interface Resource{
 
-class VolatileResource {
+    void printFlagStatus();
+
+    void setFlagTrue();
+}
+class VolatileResource implements Resource {
     private volatile boolean flag = false;
 
-    void printFlagStatus() {
+    @Override
+    public void printFlagStatus() {
         while (!flag) {
             //infine loop
         }
         System.out.println("Flag is true.");
     }
 
-    void setFlagTrue() {
+    @Override
+    public void setFlagTrue() {
         flag = true;
     }
 }
 
-class NonVolatileResource {
+class NonVolatileResource implements Resource{
     private boolean flag = false;
 
-    void printFlagStatus() {
+    @Override
+    public void printFlagStatus() {
         while (!flag) {
             //infine loop
         }
         System.out.println("Flag is true.");
     }
 
-    void setFlagTrue() {
+    @Override
+    public void setFlagTrue() {
         flag = true;
     }
 
